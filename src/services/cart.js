@@ -1,19 +1,51 @@
 import { baseUrl } from "../constants";
 import { commonErrorHandler } from "../utils";
 
-export const registerUser = async (username, email, password) => {
+export const getCart = async () => {
     try {
-        const url = `${baseUrl}/register`;
+        const token = localStorage.getItem('token');
+        const url = `${baseUrl}/cart`;
+        console.log('fetch req', {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: token,
+            },
+        });
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: token,
+            },
+        });
+
+        if (!response.ok) {
+            const err = await commonErrorHandler(response)
+            throw err
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const addToCart = async (productId, quantity) => {
+    try {
+        const token = localStorage.getItem('token');
+        const url = `${baseUrl}/cart/add`;
         const response = await fetch(url, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
+                Authorization: token,
             },
             body: JSON.stringify({
-                username,
-                email,
-                password,
-                user_type: 'customer'
+                product_id: productId,
+                quantity: quantity,
             }),
         });
 
@@ -29,43 +61,19 @@ export const registerUser = async (username, email, password) => {
     }
 };
 
-export const loginUser = async (identifier, password) => {
+export const removeItemFromCart = async (productId, quantity) => {
     try {
-        const url = `${baseUrl}/login`;
+        const token = localStorage.getItem('token');
+        const url = `${baseUrl}/cart/delete`;
         const response = await fetch(url, {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
+                Authorization: token,
             },
             body: JSON.stringify({
-                identifier,
-                password,
-            }),
-        });
-
-        if (!response.ok) {
-            const err = await commonErrorHandler(response)
-            throw err
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        throw error;
-    }
-};
-
-export const verifyOtp = async (email, otp) => {
-    try {
-        const url = `${baseUrl}/verify-otp`;
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email,
-                otp,
+                product_id: productId,
+                quantity: quantity,
             }),
         });
 

@@ -1,24 +1,49 @@
 import { FaRegUser, FaSignOutAlt } from "react-icons/fa";
 import "./Header.css";
 import SearchField from "./SearchField";
-// import { AuthContext } from "../../contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
-import MenuButton from "./MenuButton";
 import SubMenu from "./SubMenu";
 import { useLocation, useNavigate } from "react-router-dom";
-// import { FaRegFloppyDisk, FaRegMessage } from "react-icons/fa6";
 import { useHeader } from "../../contexts/HeaderContext";
 import HamburgerButton from "./HamburgerButton";
 import { useDatabase } from "../../contexts/DatabaseContext";
+import MainMenu from "./MainMenu";
+import { AuthContext } from "../../contexts/AuthContext";
+import OffCanvas from "./OffCanvas";
+import { useCart } from "../../contexts/CartContext";
+import SlideInCart from "../SlideInCart/SlideInCart";
 
 const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { authenticated, logout } = useContext(AuthContext)
+    const { itemsInCart, calculateQuantity, slideInCart, setSlideInCart } =
+        useCart();
+
+    const TotalQuantity = calculateQuantity(itemsInCart);
 
     const { selectedProductId, setSelectedProductId } = useDatabase()
 
     const { isOpen, setIsOpen, menuHandler, offCanvasHandler } = useHeader();
     const [showMegamenu, setShowMegamenu] = useState(true);
+
+    const signInAction = () => {
+        if (authenticated) {
+            logout()
+        } else {
+            navigate(`/login`);
+        }
+    }
+
+    const Navigation = [
+        {
+            id: 1,
+            menu: authenticated ? "Log Out" : "Sign In",
+            icon: authenticated ? <FaSignOutAlt /> : <FaRegUser />,
+            action: signInAction
+
+        },
+    ];
 
     useEffect(() => {
         if (!isOpen) {
@@ -45,23 +70,20 @@ const Header = () => {
         setIsOpen((isOpen) => !isOpen);
     }
 
-    //   const { setAuthenticated } = useContext(AuthContext);
-
-    //   const logOut = () => {
-    //     localStorage.clear()
-    //     setAuthenticated(false)
-    //   }
-
-    // Check if the current route is the login page
+    // hide the header in case of login screen
     const isLoginPage = location.pathname === "/login";
-
     if (isLoginPage) {
-        return null; // Return null to hide the Header
+        return null;
     }
 
     return (
         <>
             <header className="relative">
+                <SlideInCart
+                    className={slideInCart ? "translate-x-0" : ""}
+                    setSlideInCart={setSlideInCart}
+                    slideInCart={slideInCart}
+                />
                 <div className="bg-primary px-4 py-3 xl:py-4 2xl:px-16">
                     <div className="container mx-auto">
                         {/* Desktop Header */}
@@ -75,7 +97,13 @@ const Header = () => {
                                 </div>
                             </div>
                             <div className="lg:pr-0 xl:pl-14 xl:pr-6 2xl:pr-4">
-                                {/* <MenuButton icon={<FaSignOutAlt />} label={true} labelText={"Log Out"} onClick={logOut} /> */}
+                                <MainMenu
+                                    MenuArray={Navigation}
+                                    label={true}
+                                    slideInCart={slideInCart}
+                                    setSlideInCart={setSlideInCart}
+                                    TotalQuantity={TotalQuantity}
+                                />
                             </div>
                         </div>
                         {/* Mobile Header */}
@@ -85,7 +113,13 @@ const Header = () => {
                                 <HamburgerButton handler={offCanvasHandler} />
                                 <SearchField />
                                 <div className="pl-4">
-                                    {/* <MenuButton icon={<FaSignOutAlt />} label={false} labelText={"Log Out"} onClick={logOut} /> */}
+                                    <MainMenu
+                                        MenuArray={Navigation}
+                                        label={false}
+                                        slideInCart={slideInCart}
+                                        setSlideInCart={setSlideInCart}
+                                        TotalQuantity={TotalQuantity}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -93,6 +127,7 @@ const Header = () => {
                 </div>
             </header>
             {showMegamenu && <SubMenu openProduct={openProduct} backToHome={toggleMegaMenu} />}
+            <OffCanvas />
         </>
     );
 };

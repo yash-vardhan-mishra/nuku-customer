@@ -1,17 +1,21 @@
-// src/pages/Authentication/Authentication.jsx
 import React, { useState, useContext } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import './Authentication.css';
 
 const Authentication = () => {
-    const { login, register, verify, authenticated, otpSent, verifyVendorAfterLogin } = useContext(AuthContext);
+    const { login, register, verify, authenticated, otpSent } = useContext(AuthContext);
     const navigate = useNavigate();
+    const location = useLocation(); 
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [otp, setOtp] = useState("");
     const [isRegistering, setIsRegistering] = useState(false);
+
+    // get the path params to redirect the user after authentication
+    const from = location.state?.from || "/";
+
 
     const resetValues = () => {
         setEmail('');
@@ -24,35 +28,27 @@ const Authentication = () => {
         event.preventDefault();
 
         if (otpSent) {
-            // Handle OTP verification through the context
             try {
-                if (isRegistering) {
-                    await verify(email, otp);
-                } else {
-                    await verifyVendorAfterLogin(email, password, otp)
-                }
-                // navigate("/"); // Redirect after successful OTP verification
+                await verify(email, otp);
+                navigate(from);
             } catch (error) {
-                console.error("OTP Verification error:", error);
+                alert(error.message || 'Something went wrong')
             }
         } else if (isRegistering) {
-            // Handle registration
             try {
                 await register(username, email, password);
-                // After successful registration, OTP will be sent automatically
             } catch (error) {
-                console.error("Registration error:", error);
+                alert(error.message || 'Something went wrong')
             }
         } else {
-            // Handle login
             try {
                 await login(email, password);
-                // navigate("/"); // Redirect after successful login
             } catch (error) {
-                console.error("Login error:", error);
+                alert(error.message || 'Something went wrong')
             }
         }
     };
+
 
     const toggleRegister = () => {
         setIsRegistering(!isRegistering);
@@ -60,7 +56,7 @@ const Authentication = () => {
     };
 
     if (authenticated) {
-        return <Navigate to="/" replace />;
+        return <Navigate to={from} replace />;
     }
 
     return (

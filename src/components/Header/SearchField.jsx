@@ -52,12 +52,10 @@ const SearchField = () => {
       const lowercaseSearchInput = searchInput.toLowerCase();
       searchProducts(lowercaseSearchInput)
         .then((data) => {
-          console.log('searchProducts data', data);
           setSearchResult(data);
         })
         .catch((err) => {
-          console.error("Error fetching search results:", err);
-          setSearchResult([]); // Clear results in case of error
+          setSearchResult([]);
         });
     } else {
       setSearchResult([]);

@@ -46,20 +46,6 @@ const ProductCard = ({ product, className }) => {
               </span>
               <span className="absolute left-full top-0 -ml-2 block h-full w-3 skew-x-12 bg-yellow-400"></span>
             </div>
-            <button
-              className="cursor-pointer bg-black p-2 text-white"
-              // onClick={() =>
-              //   addToCartHandler(
-              //     product.id,
-              //     product.title,
-              //     product.category,
-              //     product.image,
-              //     product.price,
-              //   )
-              // }
-            >
-              Add to Cart
-            </button>
           </div>
         </div>
       </div>

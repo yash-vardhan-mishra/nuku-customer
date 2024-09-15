@@ -1,7 +1,5 @@
 import { useState, createContext, useContext, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-import { baseUrl } from "../constants";
-import { checkForErrorType } from "../utils";
 import { fetchProducts } from "../services/products";
 import Loading from "../components/Utilities/Loading";
 
@@ -46,7 +44,7 @@ export const DatabaseProvider = ({ children }) => {
 
     return (
         <DatabaseContext.Provider
-            value={{ data, fetchData, selectedProductId, setSelectedProductId }}
+            value={{ data, selectedProductId, setSelectedProductId }}
         >
             {children}
         </DatabaseContext.Provider>

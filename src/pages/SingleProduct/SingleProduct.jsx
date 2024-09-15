@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BsCart2 } from "react-icons/bs";
 import Layout from "../../Layout";
 import Loading from "../../components/Utilities/Loading";
 import { fetchSingleProduct } from "../../services/products";
+import { AuthContext } from "../../contexts/AuthContext";
+import { useCart } from "../../contexts/CartContext";
 
 const SingleProduct = () => {
     const [quantity, setQuantity] = useState(1);
     const [singleProduct, setSingleProduct] = useState();
     const [loading, setLoading] = useState(true);
+    const { authenticated } = useContext(AuthContext);
     const navigate = useNavigate();
+    const { addToCartHandler } = useCart();
 
     const { id } = useParams();
 
@@ -17,11 +21,10 @@ const SingleProduct = () => {
         if (!loading) {
             setLoading(true)
         }
-        const getSingleProductWithCart = async (id) => {
+        const getSingleProduct = async (id) => {
             fetchSingleProduct(id)
                 .then(res => {
                     setSingleProduct(res);
-                    // return getCart()
                 })
                 .catch(err => {
                     alert(err.message || 'Something went wrong')
@@ -30,10 +33,9 @@ const SingleProduct = () => {
                 })
         };
 
-        getSingleProductWithCart(id);
+        getSingleProduct(id);
     }, [id]);
 
-    // Handle quantity increment and decrement
     const decrementQuantity = () => {
         if (quantity > 1) {
             setQuantity((prevQuantity) => prevQuantity - 1);
@@ -42,6 +44,14 @@ const SingleProduct = () => {
 
     const incrementQuantity = () => {
         setQuantity((prevQuantity) => prevQuantity + 1);
+    };
+
+    const addItemsToCart = () => {
+        if (!authenticated) {
+            navigate("/login", { state: { from: `/product/${id}` } });
+        } else {
+            addToCartHandler(id, quantity)
+        }
     };
 
     if (loading) {
@@ -111,7 +121,7 @@ const SingleProduct = () => {
 
                                     <button
                                         className="flex items-center justify-center gap-3 rounded bg-sky-500 px-8 py-3 text-white transition duration-300 hover:bg-sky-600"
-                                    // onClick={addItemsToCart}
+                                        onClick={addItemsToCart}
                                     >
                                         <BsCart2 />
                                         <span>Add to bag</span>

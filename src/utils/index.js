@@ -28,3 +28,12 @@ export const checkForErrorType = (error) => {
         return false;
     }
 };
+
+export const formatToNzd = (value) => {
+    return new Intl.NumberFormat('en-NZ', {
+        style: 'currency',
+        currency: 'NZD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(value);
+};
