@@ -28,13 +28,11 @@ export const CartProvider = ({ children }) => {
                 setItemsInCart(modifiedCartData);
             }
         }).catch(err => {
-            console.log('fetchCart err',err);
-            
-            // const shouldDeleteToken = checkForErrorType(err);
-            // if (shouldDeleteToken) {
-            //     // logout()
-            //     navigate(`/home`);
-            // }
+            const shouldDeleteToken = checkForErrorType(err);
+            if (shouldDeleteToken) {
+                logout()
+                navigate(`/home`);
+            }
         })
     }
 

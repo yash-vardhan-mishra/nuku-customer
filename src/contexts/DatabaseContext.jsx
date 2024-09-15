@@ -1,5 +1,4 @@
 import { useState, createContext, useContext, useEffect } from "react";
-import { AuthContext } from "./AuthContext";
 import { fetchProducts } from "../services/products";
 import Loading from "../components/Utilities/Loading";
 
@@ -10,7 +9,6 @@ export const useDatabase = () => {
 };
 
 export const DatabaseProvider = ({ children }) => {
-    const { authenticated, logout } = useContext(AuthContext);
     const [data, setData] = useState();
     const [selectedProductId, setSelectedProductId] = useState(null)
 
