@@ -20,8 +20,8 @@ const SingleProduct = () => {
     useEffect(() => {
         if (itemsInCart?.length) {
             const valueForThisItem = itemsInCart.filter(itm => itm.id === id);
-            if (valueForThisItem?.length) {
-                setQuantity(valueForThisItem[0].quantity)
+            if (valueForThisItem?.length && valueForThisItem[0].quantity) {
+                setQuantity(parseInt(valueForThisItem[0].quantity, 10))
             } else {
                 setQuantity(1)
             }
