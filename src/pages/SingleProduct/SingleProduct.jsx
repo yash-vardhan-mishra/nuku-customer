@@ -13,11 +13,19 @@ const SingleProduct = () => {
     const [loading, setLoading] = useState(true);
     const { authenticated } = useContext(AuthContext);
     const navigate = useNavigate();
-    const { addToCartHandler } = useCart();
+    const { addToCartHandler, itemsInCart } = useCart();
 
     const { id } = useParams();
 
     useEffect(() => {
+        if (itemsInCart?.length) {
+            const valueForThisItem = itemsInCart.filter(itm => itm.id === id);
+            if (valueForThisItem?.length) {
+                setQuantity(valueForThisItem[0].quantity)
+            } else {
+                setQuantity(1)
+            }
+        }
         if (!loading) {
             setLoading(true)
         }
