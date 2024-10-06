@@ -55,7 +55,7 @@ const SubMenu = ({ openProduct, backToHome }) => {
                                         key={category}
                                         className={`cursor-pointer border-primary pb-5 ${category === activeCategory ? "submenu-active border-b-2" : ""}`}
                                     >
-                                        <span className="text-lg font-semibold capitalize">
+                                        <span className="text-lg font-semibold uppercase">
                                             {category}
                                         </span>
                                     </li>

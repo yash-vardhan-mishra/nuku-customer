@@ -8,9 +8,12 @@ import { HeaderProvider } from "./contexts/HeaderContext";
 import { DatabaseProvider } from "./contexts/DatabaseContext";
 import SingleProduct from "./pages/SingleProduct/SingleProduct";
 import { CartProvider } from "./contexts/CartContext";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
+    <>
     <Router>
       <AuthProvider>
         <DatabaseProvider>
@@ -33,6 +36,8 @@ function App() {
         </DatabaseProvider>
       </AuthProvider>
     </Router>
+    <ToastContainer />
+    </>
   );
 }
 

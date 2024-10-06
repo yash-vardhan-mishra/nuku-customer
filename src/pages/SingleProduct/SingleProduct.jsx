@@ -6,6 +6,7 @@ import Loading from "../../components/Utilities/Loading";
 import { fetchSingleProduct } from "../../services/products";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
+import { toast } from 'react-toastify';
 
 const SingleProduct = () => {
     const [quantity, setQuantity] = useState(1);
@@ -35,7 +36,7 @@ const SingleProduct = () => {
                     setSingleProduct(res);
                 })
                 .catch(err => {
-                    alert(err.message || 'Something went wrong');
+                    showError(err.message);
                 })
                 .finally(() => {
                     setLoading(false);
@@ -44,6 +45,12 @@ const SingleProduct = () => {
 
         getSingleProduct(id);
     }, [id]);
+    const showError = (error) => {
+        const errorMessage = error || 'Something went wrong';
+        const colonIndex = errorMessage.indexOf(':');
+        const finalMessage = colonIndex !== -1 ? errorMessage.slice(colonIndex + 1).trim() : errorMessage;
+        toast.error(finalMessage);
+    };
 
     const decrementQuantity = () => {
         if (quantity > 1) {

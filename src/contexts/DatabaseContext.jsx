@@ -1,6 +1,7 @@
 import { useState, createContext, useContext, useEffect } from "react";
 import { fetchProducts } from "../services/products";
 import Loading from "../components/Utilities/Loading";
+import { toast } from 'react-toastify';
 
 const DatabaseContext = createContext();
 
@@ -20,10 +21,16 @@ export const DatabaseProvider = ({ children }) => {
         fetchProducts().then(res => {
             setData(res)
         }).catch(err => {
-            alert(err.message || 'Something went wrong')
+            showError(err.message)
         }).finally(() => {
             setLoading(false)
         })
+    };
+    const showError = (error) => {
+        const errorMessage = error || 'Something went wrong';
+        const colonIndex = errorMessage.indexOf(':');
+        const finalMessage = colonIndex !== -1 ? errorMessage.slice(colonIndex + 1).trim() : errorMessage;
+        toast.error(finalMessage);
     };
 
     useEffect(() => {

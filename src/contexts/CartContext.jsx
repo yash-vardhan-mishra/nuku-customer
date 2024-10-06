@@ -4,6 +4,7 @@ import { AuthContext } from "./AuthContext";
 import { checkForErrorType, formatToNzd } from "../utils";
 import { addToCart, getCart, removeItemFromCart } from "../services/cart";
 import { useDatabase } from "./DatabaseContext";
+import { toast } from 'react-toastify';
 
 const CartContext = createContext();
 
@@ -53,9 +54,9 @@ export const CartProvider = ({ children }) => {
         try {
             const data = await addToCart(id, quantity);
             fetchCart()
-            alert('Product added to cart successfully!');
+            toast.success('Product added to cart successfully!');
         } catch (error) {
-            alert(error.message);
+            showError(error.message);
         }
         setSlideInCart(true);
     };
@@ -67,11 +68,18 @@ export const CartProvider = ({ children }) => {
         try {
             const data = await removeItemFromCart(productId, quantity);
             fetchCart()
-            alert('Product deleted from cart successfully!');
+            toast.success('Product deleted from cart successfully!');
         } catch (error) {
-            alert(error.message);
+            showError(error.message);
         }
         setSlideInCart(true);
+    };
+
+    const showError = (error) => {
+        const errorMessage = error || 'Something went wrong';
+        const colonIndex = errorMessage.indexOf(':');
+        const finalMessage = colonIndex !== -1 ? errorMessage.slice(colonIndex + 1).trim() : errorMessage;
+        toast.error(finalMessage);
     };
 
     const getOverlay = document.getElementById("body-overlay");

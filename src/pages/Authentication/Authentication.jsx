@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import './Authentication.css';
+import { toast } from "react-toastify";
 
 const Authentication = () => {
     const { login, register, verify, authenticated, otpSent } = useContext(AuthContext);
@@ -32,21 +33,27 @@ const Authentication = () => {
                 await verify(email, otp);
                 navigate(from);
             } catch (error) {
-                alert(error.message || 'Something went wrong')
+                showError(error.message)
             }
         } else if (isRegistering) {
             try {
                 await register(username, email, password);
             } catch (error) {
-                alert(error.message || 'Something went wrong')
+                showError(error.message)
             }
         } else {
             try {
                 await login(email, password);
             } catch (error) {
-                alert(error.message || 'Something went wrong')
+                showError(error.message)
             }
         }
+    };
+    const showError = (error) => {
+        const errorMessage = error || 'Something went wrong';
+        const colonIndex = errorMessage.indexOf(':');
+        const finalMessage = colonIndex !== -1 ? errorMessage.slice(colonIndex + 1).trim() : errorMessage;
+        toast.error(finalMessage);
     };
 
 
