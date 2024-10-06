@@ -21,13 +21,13 @@ const SingleProduct = () => {
         if (itemsInCart?.length) {
             const valueForThisItem = itemsInCart.filter(itm => itm.id === id);
             if (valueForThisItem?.length && valueForThisItem[0].quantity) {
-                setQuantity(parseInt(valueForThisItem[0].quantity, 10))
+                setQuantity(parseInt(valueForThisItem[0].quantity, 10));
             } else {
-                setQuantity(1)
+                setQuantity(1);
             }
         }
         if (!loading) {
-            setLoading(true)
+            setLoading(true);
         }
         const getSingleProduct = async (id) => {
             fetchSingleProduct(id)
@@ -35,10 +35,11 @@ const SingleProduct = () => {
                     setSingleProduct(res);
                 })
                 .catch(err => {
-                    alert(err.message || 'Something went wrong')
-                }).finally(() => {
-                    setLoading(false)
+                    alert(err.message || 'Something went wrong');
                 })
+                .finally(() => {
+                    setLoading(false);
+                });
         };
 
         getSingleProduct(id);
@@ -51,14 +52,16 @@ const SingleProduct = () => {
     };
 
     const incrementQuantity = () => {
-        setQuantity((prevQuantity) => prevQuantity + 1);
+        if (quantity < singleProduct.stock_quantity) {
+            setQuantity((prevQuantity) => prevQuantity + 1);
+        }
     };
 
     const addItemsToCart = () => {
         if (!authenticated) {
             navigate("/login", { state: { from: `/product/${id}` } });
         } else {
-            addToCartHandler(id, quantity)
+            addToCartHandler(id, quantity);
         }
     };
 
@@ -67,7 +70,7 @@ const SingleProduct = () => {
     }
 
     if (singleProduct?.image_url) {
-        const { title, image_url, description, category, price } = singleProduct;
+        const { title, image_url, description, category, price, stock_quantity } = singleProduct;
 
         return (
             <Layout>
@@ -121,6 +124,7 @@ const SingleProduct = () => {
                                                 id="increment-button"
                                                 className="h-12 rounded-e border border-gray-300 bg-gray-100 p-3 hover:bg-gray-200 focus:outline-none"
                                                 onClick={incrementQuantity}
+                                                disabled={quantity >= stock_quantity}
                                             >
                                                 +
                                             </button>
