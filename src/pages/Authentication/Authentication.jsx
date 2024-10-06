@@ -68,7 +68,7 @@ const Authentication = () => {
                 <p className="auth-subtitle">
                     {otpSent
                         ? "Please enter the OTP sent to your email to verify your account."
-                        : "Change your preferences, review and track orders, get service and more."}
+                        : "Browse through the products and manage your cart."}
                 </p>
                 <form onSubmit={handleSubmit} className="auth-form">
                     {otpSent ? (
